@@ -1,0 +1,12 @@
+{
+  "repeat_keys": true,
+  "shadow": false,
+  "scale": [1],
+  "elements": [
+    {
+      "type": "terminator:terminal",
+      "name": "term",
+      "relx": "center"
+    }
+  ]
+}

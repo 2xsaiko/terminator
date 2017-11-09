@@ -1,0 +1,17 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "terminator",
+    "name": "Terminator",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://gitlab.com/the_real_farfetchd/terminator",
+    "updateUrl": "",
+    "authorList": ["the_real_farfetchd"],
+    "credits": "Dimitar Zhekov, for the included Terminus font",
+    "logoFile": "banner.png",
+    "requiredMods": ["forge", "forgelin", "quacklib"],
+    "useDependencyInformation": true,
+    "description": "A terminal emulator for Minecraft. If you are familiar with Bash, this is similar."
+  }]
+}
