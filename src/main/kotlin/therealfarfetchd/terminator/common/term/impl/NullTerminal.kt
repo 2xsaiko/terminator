@@ -15,33 +15,45 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package therealfarfetchd.terminator
+package therealfarfetchd.terminator.common.term.impl
 
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.SidedProxy
-import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
-import org.apache.logging.log4j.LogManager
-import therealfarfetchd.terminator.common.Proxy
+import therealfarfetchd.terminator.common.term.ITerminal
 
-const val ModID = "terminator"
-const val ClientProxy = "therealfarfetchd.$ModID.client.Proxy"
-const val ServerProxy = "therealfarfetchd.$ModID.common.Proxy"
+@Suppress("RedundantSetter")
+object NullTerminal : ITerminal {
+  override fun read(): Char? = null
 
-@Mod(modid = ModID, modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter")
-object Terminator {
-  val Logger = LogManager.getLogger(ModID)!!
+  override fun bufferKey(c: Char) {}
 
-  @SidedProxy(clientSide = ClientProxy, serverSide = ServerProxy)
-  lateinit var proxy: Proxy
+  override fun resetInput() {}
 
-  @Mod.EventHandler
-  fun preInit(e: FMLPreInitializationEvent) = proxy.preInit(e)
+  override fun put(x: Int, y: Int, ch: Char) {}
 
-  @Mod.EventHandler
-  fun init(e: FMLInitializationEvent) = proxy.init(e)
+  override fun get(x: Int, y: Int): Char? = if (y == 0 && x in 0..14) "Hello world! :P"[x] else null
 
-  @Mod.EventHandler
-  fun postInit(e: FMLPostInitializationEvent) = proxy.postInit(e)
+  override fun width(): Int = 80
+
+  override fun height(): Int = 25
+
+  override fun resize(x: Int, y: Int) {}
+
+  override var cursor: Boolean
+    get() = true
+    set(value) {}
+
+  override var cursorX: Int
+    get() = 0
+    set(value) {}
+
+  override var cursorY: Int
+    get() = 0
+    set(value) {}
+
+  override fun scroll(n: Int) {}
+
+  override fun scrollDown(n: Int) {}
+
+  override fun scrollLeft(n: Int) {}
+
+  override fun scrollRight(n: Int) {}
 }

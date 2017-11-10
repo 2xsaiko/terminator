@@ -15,33 +15,36 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package therealfarfetchd.terminator
+package therealfarfetchd.terminator.common.interpreter.test
 
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.SidedProxy
-import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
-import org.apache.logging.log4j.LogManager
-import therealfarfetchd.terminator.common.Proxy
+import therealfarfetchd.terminator.common.interpreter.Environment
+import therealfarfetchd.terminator.common.interpreter.IInterpreter
 
-const val ModID = "terminator"
-const val ClientProxy = "therealfarfetchd.$ModID.client.Proxy"
-const val ServerProxy = "therealfarfetchd.$ModID.common.Proxy"
+class TestInterpreter : IInterpreter {
+  var running = true
 
-@Mod(modid = ModID, modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter")
-object Terminator {
-  val Logger = LogManager.getLogger(ModID)!!
+  override fun start(env: Environment) {
+    while (running) {
+      val ch = env.term.read()
+      if (ch != null) write(env, ch)
+    }
+  }
 
-  @SidedProxy(clientSide = ClientProxy, serverSide = ServerProxy)
-  lateinit var proxy: Proxy
+  fun write(env: Environment, c: Char) {
+    val term = env.term
+    term.put(term.cursorX, term.cursorY, c)
+    term.cursorX++
+    if (term.cursorX >= term.width()) {
+      term.cursorX = 0
+      term.cursorY++
+      if (term.cursorY >= term.height()) {
+        term.cursorY--
+        term.scroll()
+      }
+    }
+  }
 
-  @Mod.EventHandler
-  fun preInit(e: FMLPreInitializationEvent) = proxy.preInit(e)
-
-  @Mod.EventHandler
-  fun init(e: FMLInitializationEvent) = proxy.init(e)
-
-  @Mod.EventHandler
-  fun postInit(e: FMLPostInitializationEvent) = proxy.postInit(e)
+  override fun stop() {
+    running = false
+  }
 }
