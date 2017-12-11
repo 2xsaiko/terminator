@@ -15,33 +15,57 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package therealfarfetchd.terminator.client.gui.logic
+package therealfarfetchd.terminator.common.term
 
-import org.lwjgl.input.Keyboard
-import therealfarfetchd.quacklib.client.api.gui.AbstractGuiLogic
-import therealfarfetchd.terminator.client.gui.element.Terminal
-import therealfarfetchd.terminator.common.term.ITerminal
-import therealfarfetchd.terminator.common.term.Key
-import therealfarfetchd.terminator.common.term.KeyModifier
+class ColorPallette {
+  private val colors = IntArray(24) {
+    // Taken from Konsole.
+    when (it) {
+    // Normal
+      0 -> 0x000000
+      1 -> 0xB21818
+      2 -> 0x18B218
+      3 -> 0xB26818
+      4 -> 0x1818B2
+      5 -> 0xB218B2
+      6 -> 0x18B2B2
+      7 -> 0xB2B2B2
 
-class TerminalLogic : AbstractGuiLogic() {
-  val term: Terminal by component()
+    // Light
+      8 -> 0x686868
+      9 -> 0xFF5454
+      10 -> 0x54FF54
+      11 -> 0xFFFF54
+      12 -> 0x5454FF
+      13 -> 0xFF54FF
+      14 -> 0x54FFFF
+      15 -> 0xFFFFFF
 
-  val termImpl: ITerminal by params()
+    // Dark
+      16 -> 0x181818
+      17 -> 0x650000
+      18 -> 0x006500
+      19 -> 0x655E00
+      20 -> 0x000065
+      21 -> 0x650065
+      22 -> 0x006565
+      23 -> 0x656565
 
-  override fun init() {
-    term.terminal = termImpl
+      else -> 0
+    }
+  }
 
-    root.key { char, _ ->
-      if (char != '\u0000') {
-        var mods = emptySet<KeyModifier>()
-        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
-          mods += KeyModifier.KeyCtrl
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-          mods += KeyModifier.KeyShift
-        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU))
-          mods += KeyModifier.KeyAlt
-        termImpl.bufferKey(Key(char, mods))
+  fun getColor(index: Int, highlight: Highlight = Highlight.Normal) = colors[index + (highlight.id shl 3)]
+
+  enum class Highlight(val id: Int) {
+    Normal(0), Light(1), Dark(2);
+
+    companion object {
+      fun byId(id: Int) = when (id) {
+        Normal.id -> Normal
+        Light.id -> Light
+        Dark.id -> Dark
+        else -> Normal
       }
     }
   }

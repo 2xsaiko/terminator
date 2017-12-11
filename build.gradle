@@ -5,7 +5,8 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
+        // noinspection DifferentKotlinGradleVersion
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:+"
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -42,7 +43,7 @@ repositories {
 dependencies {
     compile projectOrMvn(":QuackLib", "quacklib:quacklib:+")
 
-    compile group: "net.shadowfacts", name: "Forgelin", version: "1.5.1"
+    compile 'net.shadowfacts:Forgelin:+'
 }
 
 def projectOrMvn(String project, String artifact) {

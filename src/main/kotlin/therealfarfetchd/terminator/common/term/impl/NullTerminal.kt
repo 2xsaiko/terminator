@@ -17,37 +17,54 @@
 
 package therealfarfetchd.terminator.common.term.impl
 
+import therealfarfetchd.terminator.common.term.ColorPallette
 import therealfarfetchd.terminator.common.term.ITerminal
+import therealfarfetchd.terminator.common.term.Key
 
-@Suppress("RedundantSetter")
 object NullTerminal : ITerminal {
-  override fun read(): Char? = null
+  override fun resetAttrib() {}
 
-  override fun bufferKey(c: Char) {}
+  override fun setBGCol(color: Int) {}
+
+  override fun getBGCol(x: Int, y: Int): Int? = 0
+
+  override fun setFGCol(color: Int) {}
+
+  override fun getFGCol(x: Int, y: Int): Int? = 1
+
+  override fun setHighlight(highlight: ColorPallette.Highlight) {}
+
+  override fun getHighlight(x: Int, y: Int): ColorPallette.Highlight? = ColorPallette.Highlight.Normal
+
+  override fun clear() {}
+
+  override fun cursor() = true
+
+  override fun cursor(value: Boolean) {}
+
+  override fun cursorX() = 22
+
+  override fun cursorY() = 0
+
+  override fun cursorX(x: Int) {}
+
+  override fun cursorY(y: Int) {}
+
+  override fun read() = null
+
+  override fun bufferKey(c: Key) {}
 
   override fun resetInput() {}
 
   override fun put(x: Int, y: Int, ch: Char) {}
 
-  override fun get(x: Int, y: Int): Char? = if (y == 0 && x in 0..14) "Hello world! :P"[x] else null
+  override fun get(x: Int, y: Int) = if (y == 0 && x in 0..21) "Terminal disconnected."[x] else null
 
-  override fun width(): Int = 80
+  override fun width() = 80
 
-  override fun height(): Int = 25
+  override fun height() = 25
 
   override fun resize(x: Int, y: Int) {}
-
-  override var cursor: Boolean
-    get() = true
-    set(value) {}
-
-  override var cursorX: Int
-    get() = 0
-    set(value) {}
-
-  override var cursorY: Int
-    get() = 0
-    set(value) {}
 
   override fun scroll(n: Int) {}
 

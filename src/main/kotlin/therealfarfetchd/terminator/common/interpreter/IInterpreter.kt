@@ -23,9 +23,4 @@ interface IInterpreter {
    * Runs in a new thread.
    */
   fun start(env: Environment)
-
-  /**
-   * Gets called if the game shuts down or interpreters are switched.
-   */
-  fun stop()
 }

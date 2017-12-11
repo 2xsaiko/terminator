@@ -35,13 +35,20 @@ import therealfarfetchd.terminator.client.gui.logic.TerminalLogic
 import therealfarfetchd.terminator.client.settings.Keybindings
 import therealfarfetchd.terminator.common.Proxy
 import therealfarfetchd.terminator.common.interpreter.InterpreterManager
-import therealfarfetchd.terminator.common.interpreter.test.TestInterpreter
 import therealfarfetchd.terminator.common.term.impl.StandardTerminal
 
 class Proxy : Proxy() {
   val mc = Minecraft.getMinecraft()
 
   val terminalGui = ResourceLocation(ModID, "terminal")
+
+  private var _terminalFont: FontTextureUtils? = null
+  val terminalFont: FontTextureUtils
+    get() =
+      if (_terminalFont == null)
+        FontTextureUtils(BDFParser.read(ResourceLocation(ModID, "fonts/terminus/ter-u16n.bdf")))
+          .also { _terminalFont = it }
+      else _terminalFont!!
 
   override fun preInit(e: FMLPreInitializationEvent) {
     super.preInit(e)
@@ -52,7 +59,8 @@ class Proxy : Proxy() {
 
   override fun postInit(e: FMLPostInitializationEvent) {
     super.postInit(e)
-    InterpreterManager.startInterpreter(TestInterpreter(), StandardTerminal)
+    InterpreterManager.setOutputTerminal(StandardTerminal)
+    InterpreterManager.start()
   }
 
   @SubscribeEvent
@@ -66,6 +74,8 @@ class Proxy : Proxy() {
 
   @SubscribeEvent
   fun onReloadTextures(e: TextureStitchEvent.Pre) {
-    FontTextureUtils.prepareFont(BDFParser.read(ResourceLocation(ModID, "fonts/terminus/ter-u16n.bdf")))
+    _terminalFont?.destroy()
+    _terminalFont = null
+    terminalFont
   }
 }

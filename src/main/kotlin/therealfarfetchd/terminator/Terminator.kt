@@ -17,6 +17,7 @@
 
 package therealfarfetchd.terminator
 
+import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -32,6 +33,8 @@ const val ServerProxy = "therealfarfetchd.$ModID.common.Proxy"
 @Mod(modid = ModID, modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter")
 object Terminator {
   val Logger = LogManager.getLogger(ModID)!!
+
+  val version by lazy { Loader.instance().reversedModObjectList[this]?.version ?: "custom" }
 
   @SidedProxy(clientSide = ClientProxy, serverSide = ServerProxy)
   lateinit var proxy: Proxy

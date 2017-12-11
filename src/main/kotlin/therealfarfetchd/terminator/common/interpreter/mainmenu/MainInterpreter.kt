@@ -15,34 +15,50 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package therealfarfetchd.terminator.client.gui.logic
+package therealfarfetchd.terminator.common.interpreter.mainmenu
 
-import org.lwjgl.input.Keyboard
-import therealfarfetchd.quacklib.client.api.gui.AbstractGuiLogic
-import therealfarfetchd.terminator.client.gui.element.Terminal
+import therealfarfetchd.terminator.Terminator
+import therealfarfetchd.terminator.common.interpreter.Environment
+import therealfarfetchd.terminator.common.interpreter.IInterpreter
 import therealfarfetchd.terminator.common.term.ITerminal
-import therealfarfetchd.terminator.common.term.Key
-import therealfarfetchd.terminator.common.term.KeyModifier
+import therealfarfetchd.terminator.common.term.moveCursor
+import therealfarfetchd.terminator.common.term.newLine
 
-class TerminalLogic : AbstractGuiLogic() {
-  val term: Terminal by component()
+class MainInterpreter : IInterpreter {
+  override fun start(env: Environment) {
+    val t = env.term
 
-  val termImpl: ITerminal by params()
+    t.resetAttrib()
+    t.resetInput()
+    t.clear()
 
-  override fun init() {
-    term.terminal = termImpl
+    t.cursorX(0)
+    t.cursorY(0)
+    t.cursor(true)
 
-    root.key { char, _ ->
-      if (char != '\u0000') {
-        var mods = emptySet<KeyModifier>()
-        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
-          mods += KeyModifier.KeyCtrl
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-          mods += KeyModifier.KeyShift
-        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU))
-          mods += KeyModifier.KeyAlt
-        termImpl.bufferKey(Key(char, mods))
+    t.println("Version ${Terminator.version}")
+
+    for (bg in 0..7) {
+      t.println("")
+      t.setBGCol(bg)
+      for (fg in 0..7) {
+        t.setFGCol(fg)
+        t.print(" F:$fg B:$bg ")
       }
     }
+
+    while (true) Thread.sleep(1000)
   }
+
+  fun ITerminal.print(s: String) = s.forEach { print(it) }
+
+  fun ITerminal.print(c: Char) = when (c) {
+    '\n' -> newLine()
+    else -> {
+      put(cursorX(), cursorY(), c)
+      moveCursor()
+    }
+  }
+
+  fun ITerminal.println(s: String) = print("$s\n")
 }

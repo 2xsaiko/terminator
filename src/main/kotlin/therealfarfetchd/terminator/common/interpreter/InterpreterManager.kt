@@ -17,11 +17,40 @@
 
 package therealfarfetchd.terminator.common.interpreter
 
+import therealfarfetchd.terminator.common.interpreter.mainmenu.MainInterpreter
 import therealfarfetchd.terminator.common.term.ITerminal
+import therealfarfetchd.terminator.common.term.impl.RedirectableTerminal
 import kotlin.concurrent.thread
 
 object InterpreterManager {
-  fun startInterpreter(i: IInterpreter, term: ITerminal) = thread(isDaemon = true) {
-    i.start(Environment(term))
+  private lateinit var interpreterThread: Thread
+  private val staticTerminal = RedirectableTerminal()
+
+  private var started = false
+
+  fun start() {
+    if (started) error("Already started!")
+    started = true
+    startTerminal()
   }
+
+  private fun startTerminal() {
+    interpreterThread = thread(isDaemon = true, start = false, name = "terminal") {
+      MainInterpreter().start(Environment(staticTerminal))
+      throw ExitMarker()
+    }
+
+    interpreterThread.setUncaughtExceptionHandler { _: Thread, e: Throwable ->
+      if (e !is ExitMarker) e.printStackTrace()
+      startTerminal()
+    }
+
+    interpreterThread.start()
+  }
+
+  fun setOutputTerminal(term: ITerminal) {
+    staticTerminal.termImpl = term
+  }
+
+  private class ExitMarker : RuntimeException()
 }

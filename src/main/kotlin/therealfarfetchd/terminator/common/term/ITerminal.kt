@@ -17,21 +17,28 @@
 
 package therealfarfetchd.terminator.common.term
 
+typealias Key = Pair<Char, Set<KeyModifier>>
+
 interface ITerminal {
   /**
    * Non-blocking. If a char is available to be read, return it, otherwise return null.
    */
-  fun read(): Char?
+  fun read(): Key?
 
   /**
    * Puts a key in the key buffer.
    */
-  fun bufferKey(c: Char)
+  fun bufferKey(c: Key)
 
   /**
    * Clears the keyboard input queue
    */
   fun resetInput()
+
+  /**
+   * Resets all attributes (colors, highlight, ...)
+   */
+  fun resetAttrib()
 
   /**
    * Writes a char at the specified position. If this is out of bounds, does nothing.
@@ -42,6 +49,36 @@ interface ITerminal {
    * Gets the char at the specified position. Returns null if it's out of bounds
    */
   fun get(x: Int, y: Int): Char?
+
+  /**
+   * Set the background color at the specified position.
+   */
+  fun setBGCol(color: Int)
+
+  /**
+   * Gets the background color at the specified position. Returns null if it's out of bounds
+   */
+  fun getBGCol(x: Int, y: Int): Int?
+
+  /**
+   * Set the foreground color at the specified position.
+   */
+  fun setFGCol(color: Int)
+
+  /**
+   * Gets the foreground color at the specified position. Returns null if it's out of bounds
+   */
+  fun getFGCol(x: Int, y: Int): Int?
+
+  /**
+   * Set the highlight at the specified position.
+   */
+  fun setHighlight(highlight: ColorPallette.Highlight)
+
+  /**
+   * Gets the highlight at the specified position. Returns null if it's out of bounds
+   */
+  fun getHighlight(x: Int, y: Int): ColorPallette.Highlight?
 
   /**
    * Returns the width of the terminal (in chars)
@@ -59,19 +96,39 @@ interface ITerminal {
   fun resize(x: Int, y: Int)
 
   /**
+   * Clears the screen.
+   */
+  fun clear()
+
+  /**
    * True if the cursor should be displayed.
    */
-  var cursor: Boolean
+  fun cursor(): Boolean
 
   /**
-   * The cursor x position
+   * Set if the cursor should be displayed.
    */
-  var cursorX: Int
+  fun cursor(value: Boolean)
 
   /**
-   * The cursor y position
+   * The cursor x position.
    */
-  var cursorY: Int
+  fun cursorX(): Int
+
+  /**
+   * The cursor y position.
+   */
+  fun cursorY(): Int
+
+  /**
+   * Set the cursor x position.
+   */
+  fun cursorX(x: Int)
+
+  /**
+   * Set the cursor y position.
+   */
+  fun cursorY(y: Int)
 
   /**
    * Scrolls the terminal up by n characters.
@@ -92,4 +149,27 @@ interface ITerminal {
    * Scrolls the terminal right by n characters.
    */
   fun scrollRight(n: Int = 1)
+}
+
+/**
+ * Moves the cursor to the right.
+ */
+fun ITerminal.moveCursor() {
+  if (cursorX() + 1 < width()) {
+    cursorX(cursorX() + 1)
+  } else {
+    newLine()
+  }
+}
+
+/**
+ * Moves the cursor to the beginning of the next line.
+ */
+fun ITerminal.newLine() {
+  cursorX(0)
+  if (cursorY() + 1 < height()) {
+    cursorY(cursorY() + 1)
+  } else {
+    scroll()
+  }
 }

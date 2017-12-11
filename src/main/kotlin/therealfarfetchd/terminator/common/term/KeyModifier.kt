@@ -15,36 +15,10 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package therealfarfetchd.terminator.common.interpreter.test
+package therealfarfetchd.terminator.common.term
 
-import therealfarfetchd.terminator.common.interpreter.Environment
-import therealfarfetchd.terminator.common.interpreter.IInterpreter
-
-class TestInterpreter : IInterpreter {
-  var running = true
-
-  override fun start(env: Environment) {
-    while (running) {
-      val ch = env.term.read()
-      if (ch != null) write(env, ch)
-    }
-  }
-
-  fun write(env: Environment, c: Char) {
-    val term = env.term
-    term.put(term.cursorX, term.cursorY, c)
-    term.cursorX++
-    if (term.cursorX >= term.width()) {
-      term.cursorX = 0
-      term.cursorY++
-      if (term.cursorY >= term.height()) {
-        term.cursorY--
-        term.scroll()
-      }
-    }
-  }
-
-  override fun stop() {
-    running = false
-  }
+enum class KeyModifier {
+  KeyCtrl,
+  KeyShift,
+  KeyAlt
 }
