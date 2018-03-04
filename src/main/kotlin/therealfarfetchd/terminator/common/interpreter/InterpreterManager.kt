@@ -17,7 +17,7 @@
 
 package therealfarfetchd.terminator.common.interpreter
 
-import therealfarfetchd.terminator.common.interpreter.mainmenu.MainInterpreter
+import therealfarfetchd.terminator.common.interpreter.forth.ForthInterpreter
 import therealfarfetchd.terminator.common.term.ITerminal
 import therealfarfetchd.terminator.common.term.impl.RedirectableTerminal
 import kotlin.concurrent.thread
@@ -36,7 +36,7 @@ object InterpreterManager {
 
   private fun startTerminal() {
     interpreterThread = thread(isDaemon = true, start = false, name = "terminal") {
-      MainInterpreter().start(Environment(staticTerminal))
+      ForthInterpreter().start(Environment(staticTerminal))
       throw ExitMarker()
     }
 

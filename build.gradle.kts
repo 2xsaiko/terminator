@@ -53,6 +53,8 @@ dependencies {
   compileOnly(kotlin("stdlib-jre8", kotlin_version))
   compileOnly(kotlin("reflect", kotlin_version))
 
+  compile(files("libs/kforth-1.0.0.jar"))
+
   findProject(":QuackLib")?.also { compile(it) }
   ?: deobfCompile("quacklib", "quacklib", quacklib_version)
 

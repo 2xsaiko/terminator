@@ -1,4 +1,4 @@
-rootProject.name = 'hctm'
+rootProject.name = 'terminator'
 rootProject.buildFileName = 'build.gradle.kts'
 
 def includeSM(String submodule) {
